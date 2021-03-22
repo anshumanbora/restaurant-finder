@@ -10,8 +10,8 @@ export default class SearchResultList extends PureComponent{
     }
     createStarRating(ratings){
         // TODO: create star rating thingy
-        let active_star = <img src="/static/assets/star.png" class="Rating--Star Rating--Star__active"></img>
-        let passive_star =  <img src="/static/assets/star.png" class="Rating--Star"></img> 
+        let active_star = <img src="/static/assets/star.png" className="Rating--Star Rating--Star__active"></img>
+        let passive_star =  <img src="/static/assets/star.png" className="Rating--Star"></img> 
         
         let stars = null;  
         if(ratings){
@@ -26,8 +26,7 @@ export default class SearchResultList extends PureComponent{
             }
         }
 
-    let ratingDiv = <div class="Rating" aria-label="Rating of this item is 3 out of 5"></div>
-        console.log(ratingDiv)
+    let ratingDiv = <div className="Rating" aria-label="Rating of this item is 3 out of 5"></div>
         return 
     }
     createUnitView = (restaurant)=>{
@@ -40,12 +39,11 @@ export default class SearchResultList extends PureComponent{
             width="100" height="100"
             ></img>
         }
-        let favoriteIcon = <svg onClick={this.handleFavoriteClick} xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+        let favoriteIcon = <svg onClick={this.handleFavoriteClick} xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-heart" viewBox="0 0 16 16">
             <path d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
         </svg>
         let user_ratings_total = restaurant.user_ratings_total?restaurant.user_ratings_total:"No data"
-        console.log(user_ratings_total)
-    
+        
         // let start_rating = this.createStarRating(restaurant.rating)
         return(
         <div className="UnitView"
@@ -65,7 +63,6 @@ export default class SearchResultList extends PureComponent{
     createRestaurantList = (responseList) =>{
         let listOfRestaurants = []
         for(let i=0;i<responseList.length;i++){
-            console.log("pushing:", responseList[i])
             listOfRestaurants.push(
                 this.createUnitView(responseList[i])
                 )

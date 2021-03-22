@@ -15,7 +15,8 @@ export default class Map extends PureComponent {
             responseList : null,
             bounds : null,
             map: null,
-            zoom: this.props.zoom
+            zoom: 13,
+            markersList : []
         }
     }
 
@@ -23,8 +24,8 @@ export default class Map extends PureComponent {
     
     componentDidMount() {
         const location = {
-            lat: 41.4566,
-            lng: 93.4332,
+            lat: 41.586,
+            lng: -93.625,
           }
         let that = this;
         setTimeout(()=>{
@@ -48,8 +49,8 @@ export default class Map extends PureComponent {
       let map = new window.google.maps.Map(this.googleMapRef.current, {
         zoom: this.state.zoom,
         center: {
-          lat: 41.345456,
-          lng: -93.12433,
+            lat: 41.586,
+            lng: -93.625,
         },
         disableDefaultUI: true,
       })
@@ -59,13 +60,14 @@ export default class Map extends PureComponent {
      this.handleCenterChange(bounds, center)
     });
       this.setState({map:map})
-    //   console.log('creating new map and setting state map')
+      console.log('creating new map and setting state map', map)
     }
     handleCenterChange = (bounds, center)=> {
         let newLocation = {
             lat: center.lat(),
             lng: center.lng()
         }
+        this.clearMarkers()
         // console.log("calling getplaces")
         this.getPlaces(newLocation)
     }
@@ -84,7 +86,6 @@ export default class Map extends PureComponent {
             service.nearbySearch(request,(results,status)=>{
                 console.log(status)
             if(status=="OK"){
-                console.log(results);
                 this.displayMarkers(results, this.state.map,location)
                 this.setState({responseList:<SearchResultList responseList={results}/>})
             }
@@ -98,7 +99,6 @@ export default class Map extends PureComponent {
                   let service = new window.google.maps.places.PlacesService(that.state.map);
                   service.nearbySearch(request,(results,status)=>{
                   if(status=="OK"){
-                      console.log(results);
                       that.displayMarkers(results, that.state.map,location)
                       that.setState({responseList:<SearchResultList responseList={results}/>})
                   }
@@ -108,19 +108,32 @@ export default class Map extends PureComponent {
           
     }
     displayMarkers(locationList, map, location){
-        
+        let markersList = this.state.markersList;
         for(let i=0;i<locationList.length;i++){
             const pos = locationList[i].geometry.location
             const name = locationList[i].name
             // console.log("name:",name,",location:",pos)
             // TODO change icon of markers
-            new window.google.maps.Marker({
+            const marker = new window.google.maps.Marker({
                 position: pos,
                 map,
                 title: name,
               });
+            markersList.push(marker)
+        }
+        console.log("Markers created, map", map)
+        this.setMapOnAll(map)
+    }
+    setMapOnAll =(map)=>{
+        let markersList = this.state.markersList
+        for (let i = 0; i < markersList.length; i++) {
+            markersList[i].setMap(map);
         }
     }
+    clearMarkers() {
+        this.setMapOnAll(null);
+    }
+
     handleSearch = (searchTerm)=>{
         // console.log('This came from child:', searchTerm)
     }    
