@@ -1,0 +1,28 @@
+.SearchBar {
+    width:60%;
+    /* padding:200px; */
+    margin: 30px;
+}
+.Header{
+    display: flex;
+    flex-direction: row;
+}
+.field{
+    width: 600px;
+    padding: 20px;
+}
+.Logo{
+    /* width:100px; */
+    padding:16px 0px 10px 40px;
+}
+.AppName{
+    padding:10px 10px 10px 0px;
+    font-size:40px;
+    color:gray;
+    font-weight: lighter;
+}
+.BoldAppName {
+    font-weight: bold;
+    /* font-size:40px; */
+    /* color:red; */
+}

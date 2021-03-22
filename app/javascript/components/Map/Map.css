@@ -1,0 +1,12 @@
+.TopLevelWrapper{
+    display: flex;
+    flex-direction: column;
+   
+}
+.SearchListAndMapWrapper {
+    display: flex;
+    flex-direction: row;
+}
+.SearchListWrapper{
+    height:100vh;
+}
