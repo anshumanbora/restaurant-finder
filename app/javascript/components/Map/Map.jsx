@@ -17,14 +17,14 @@ export default class Map extends PureComponent {
             bounds : null,
             map: null,
             zoom: 13,
-            markersList : [],
-            favorites:[],
+            markersList : null,
+            favorites:null,
             searchTerm: null
         }
     }
 
     googleMapRef = React.createRef()
-    
+    // TODO change default location of map. Maybe make it more dynamic?
     componentDidMount() {
         const location = {
             lat: 41.586,
@@ -32,78 +32,81 @@ export default class Map extends PureComponent {
           }
         let that = this;
         setTimeout(()=>{
-            that.createGoogleMap()  
-            that.getPlaces(location)    
+            that.createGoogleMap()    
         },200)  
         
     }
     componentDidUpdate(){
-        // console.log('componentDidUpdate');
         this.getPlaces()
     }
-    static getDerivedStateFromProps(props,state){
-        let newState = state;
-        // console.log("getDerivedStateFromProps")
-        return newState;
-    }
+    
     saveFavorite= (favorites) => {
         this.setState({favorites})
     }
 
     createGoogleMap(){
       let map = new window.google.maps.Map(this.googleMapRef.current, {
-        zoom: this.state.zoom,
-        center: {
-            lat: 41.586,
-            lng: -93.625,
-        },
-        disableDefaultUI: true,
-      })
-      map.addListener('center_changed', () => {
-        let bounds = map.getBounds()
-        let center = map.getCenter()
-     this.handleCenterChange(bounds, center)
-    });
-      this.setState({map:map})
-    //   console.log('creating new map and setting state map', map)
+            zoom: this.state.zoom,
+            center: {
+                lat: 41.586,
+                lng: -93.625,
+            },
+            disableDefaultUI: true,
+        })
+        map.addListener('center_changed', () => {
+            let bounds = map.getBounds()
+            let center = map.getCenter()
+            this.handleCenterChange(bounds, center)
+        });
+        this.setState({map:map})
     }
     handleCenterChange = (bounds, center)=> {
         let newLocation = {
             lat: center.lat(),
             lng: center.lng()
         }
-        this.clearMarkers()
-        // console.log("calling getplaces")
-        this.getPlaces()
+        
+        this.clearMarkers();
+        this.getPlaces();
     }
     getPlaces(){
         // TODO 1. pagination to get more places(look into it)
         // TODO 2. Get nearby query from bounding box instead of center of the map
         // TODO 3. Make this more modular. Break it in to maintainable components
-        
         let {searchTerm, map} = this.state;
-          if(this.state.map){
-            if(searchTerm){
-                let request = {
-                    query: searchTerm,
-                    locationBias: {
-                        radius: 1000,
-                        center: map.getCenter()
-                    },
-                    fields: ['name', 'geometry', 'place_id','photos','price_level','rating','user_ratings_total'],
-                };
-                let service = new window.google.maps.places.PlacesService(this.state.map);
-                service.findPlaceFromQuery(request, (results,status)=>{
-                    console.log(searchTerm, status, results)
-                    if(status=="OK"){
-                        // this.displayMarkers(results, map, location)
-                        this.setState({responseList:<SearchResultList getFavorite={this.saveFavorite} responseList={results}/>})
-                    }
-                });
-            }
+          if(map && searchTerm){  
+            let request = {
+                query: searchTerm,
+                locationBias: {
+                    radius: 10000,
+                    center: map.getCenter()
+                },
+                fields: [
+                    'name',
+                    'geometry', 
+                    'place_id',
+                    'photos',
+                    'price_level',
+                    'rating',
+                    'user_ratings_total'
+                ],
+            };
+            let service = new window.google.maps.places.PlacesService(this.state.map);
+            service.findPlaceFromQuery(request, (results,status)=>{
+                if(status=="OK"){
+                    //clear markers from old queries to avoid confusion
+                    this.displayMarkers(results, map)
+                    this.setState(
+                        {
+                            responseList:
+                            <SearchResultList getFavorite={this.saveFavorite} responseList={results}/>
+                        }
+                    );
+                }
+            });
         }         
     }
-    displayMarkers(locationList, map, location){
+    displayMarkers(locationList, map){
         let markersList = [];
         for(let i=0;i<locationList.length;i++){
             const pos = locationList[i].geometry.location
@@ -115,28 +118,33 @@ export default class Map extends PureComponent {
                 map,
                 title: name,
               });
-            markersList.push(marker)
+            markersList.push(marker) 
         }
-        // console.log("Markers created, map", map)
+        this.setState({markersList:markersList})
         this.setMapOnAll(map)
     }
     setMapOnAll =(map)=>{
         let markersList = this.state.markersList
-        for (let i = 0; i < markersList.length; i++) {
-            markersList[i].setMap(map);
-        }
+        if(markersList){
+            for (let i = 0; i < markersList.length; i++) {
+                markersList[i].setMap(map);
+            }
+        }        
     }
     clearMarkers() {
         this.setMapOnAll(null);
     }
-
+    // TODO find a way to clear old markers. As things now
+    // old markers are persisting even when it is being called
+    // here
+    
     handleSearch = (searchTerm)=>{
-        this.setState({searchTerm})
+        this.clearMarkers();
+        this.setState({searchTerm});
     }    
     // TODO handle quick refresh of map. Quick refresh leads to the app crashing because the 
     //google object is not ready yet
     render() {
-        // console.log("markers",this.state.markersList)
         let searchResultList = this.state.responseList?this.state.responseList:<div>No Results for this Area</div>
       return (
       <div className="TopLevelWrapper">
