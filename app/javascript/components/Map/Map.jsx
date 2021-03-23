@@ -1,3 +1,4 @@
+// TODO: get some linting tool to make codebase style uniform
 import React, { PureComponent, createRef } from 'react'
 import SearchBar from './SearchBar'
 import SearchResultList from './SearchList'
@@ -17,7 +18,8 @@ export default class Map extends PureComponent {
             map: null,
             zoom: 13,
             markersList : [],
-            favorites:[]
+            favorites:[],
+            searchTerm: null
         }
     }
 
@@ -37,6 +39,7 @@ export default class Map extends PureComponent {
     }
     componentDidUpdate(){
         // console.log('componentDidUpdate');
+        this.getPlaces()
     }
     static getDerivedStateFromProps(props,state){
         let newState = state;
@@ -44,7 +47,6 @@ export default class Map extends PureComponent {
         return newState;
     }
     saveFavorite= (favorites) => {
-        console.log(favorites)
         this.setState({favorites})
     }
 
@@ -63,7 +65,7 @@ export default class Map extends PureComponent {
      this.handleCenterChange(bounds, center)
     });
       this.setState({map:map})
-      console.log('creating new map and setting state map', map)
+    //   console.log('creating new map and setting state map', map)
     }
     handleCenterChange = (bounds, center)=> {
         let newLocation = {
@@ -72,46 +74,37 @@ export default class Map extends PureComponent {
         }
         this.clearMarkers()
         // console.log("calling getplaces")
-        this.getPlaces(newLocation)
+        this.getPlaces()
     }
-    getPlaces(location){
+    getPlaces(){
         // TODO 1. pagination to get more places(look into it)
         // TODO 2. Get nearby query from bounding box instead of center of the map
-        const request = {
-            radius: 1000,
-            type: ['restaurant'],
-            location: location
-          };
-            
-          if(this.state.map){
-            console.log("1 getting nearby places for location:",location)
-            let service = new window.google.maps.places.PlacesService(this.state.map);
-            service.nearbySearch(request,(results,status)=>{
-                console.log(status)
-            if(status=="OK"){
-                this.displayMarkers(results, this.state.map,location)
-                this.setState({responseList:<SearchResultList getFavorite={this.saveFavorite} responseList={results}/>})
-            }
-          })
-          }
-          else {
-            console.log("2 getting nearby places for location:",location)
+        // TODO 3. Make this more modular. Break it in to maintainable components
         
-              let that = this
-              setTimeout(()=>{
-                  let service = new window.google.maps.places.PlacesService(that.state.map);
-                  service.nearbySearch(request,(results,status)=>{
-                  if(status=="OK"){
-                      that.displayMarkers(results, that.state.map,location)
-                      that.setState({responseList:<SearchResultList getFavorite={this.saveFavorite} responseList={results}/>})
-                  }
-                })         
-                },1000)
-          }
-          
+        let {searchTerm, map} = this.state;
+          if(this.state.map){
+            if(searchTerm){
+                let request = {
+                    query: searchTerm,
+                    locationBias: {
+                        radius: 1000,
+                        center: map.getCenter()
+                    },
+                    fields: ['name', 'geometry', 'place_id','photos','price_level','rating','user_ratings_total'],
+                };
+                let service = new window.google.maps.places.PlacesService(this.state.map);
+                service.findPlaceFromQuery(request, (results,status)=>{
+                    console.log(searchTerm, status, results)
+                    if(status=="OK"){
+                        // this.displayMarkers(results, map, location)
+                        this.setState({responseList:<SearchResultList getFavorite={this.saveFavorite} responseList={results}/>})
+                    }
+                });
+            }
+        }         
     }
     displayMarkers(locationList, map, location){
-        let markersList = this.state.markersList;
+        let markersList = [];
         for(let i=0;i<locationList.length;i++){
             const pos = locationList[i].geometry.location
             const name = locationList[i].name
@@ -124,7 +117,7 @@ export default class Map extends PureComponent {
               });
             markersList.push(marker)
         }
-        console.log("Markers created, map", map)
+        // console.log("Markers created, map", map)
         this.setMapOnAll(map)
     }
     setMapOnAll =(map)=>{
@@ -138,12 +131,12 @@ export default class Map extends PureComponent {
     }
 
     handleSearch = (searchTerm)=>{
-        // console.log('This came from child:', searchTerm)
+        this.setState({searchTerm})
     }    
     // TODO handle quick refresh of map. Quick refresh leads to the app crashing because the 
     //google object is not ready yet
     render() {
-        // console.log(this.state.map)
+        // console.log("markers",this.state.markersList)
         let searchResultList = this.state.responseList?this.state.responseList:<div>No Results for this Area</div>
       return (
       <div className="TopLevelWrapper">
