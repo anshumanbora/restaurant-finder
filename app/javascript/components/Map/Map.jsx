@@ -16,7 +16,8 @@ export default class Map extends PureComponent {
             bounds : null,
             map: null,
             zoom: 13,
-            markersList : []
+            markersList : [],
+            favorites:[]
         }
     }
 
@@ -35,16 +36,18 @@ export default class Map extends PureComponent {
         
     }
     componentDidUpdate(){
-        console.log('componentDidUpdate');
+        // console.log('componentDidUpdate');
     }
     static getDerivedStateFromProps(props,state){
         let newState = state;
-        console.log("getDerivedStateFromProps")
+        // console.log("getDerivedStateFromProps")
         return newState;
     }
-    handleMapClick= () => {
-        console.log('click')
+    saveFavorite= (favorites) => {
+        console.log(favorites)
+        this.setState({favorites})
     }
+
     createGoogleMap(){
       let map = new window.google.maps.Map(this.googleMapRef.current, {
         zoom: this.state.zoom,
@@ -87,7 +90,7 @@ export default class Map extends PureComponent {
                 console.log(status)
             if(status=="OK"){
                 this.displayMarkers(results, this.state.map,location)
-                this.setState({responseList:<SearchResultList responseList={results}/>})
+                this.setState({responseList:<SearchResultList getFavorite={this.saveFavorite} responseList={results}/>})
             }
           })
           }
@@ -100,7 +103,7 @@ export default class Map extends PureComponent {
                   service.nearbySearch(request,(results,status)=>{
                   if(status=="OK"){
                       that.displayMarkers(results, that.state.map,location)
-                      that.setState({responseList:<SearchResultList responseList={results}/>})
+                      that.setState({responseList:<SearchResultList getFavorite={this.saveFavorite} responseList={results}/>})
                   }
                 })         
                 },1000)
