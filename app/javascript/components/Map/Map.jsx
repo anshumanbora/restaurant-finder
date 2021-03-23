@@ -146,7 +146,7 @@ export default class Map extends PureComponent {
     }
     handleResize = () => {
         let mobileView = false;
-        if(window.innerWidth<670){
+        if(window.innerWidth<865){
             mobileView = true; 
         }
         this.setState({mobileView})
