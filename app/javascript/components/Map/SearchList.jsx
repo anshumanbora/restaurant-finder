@@ -1,5 +1,6 @@
 import React,{PureComponent} from "react";
 import './SearchList.css'
+import StarRatings from 'react-star-ratings';
 
 export default class SearchResultList extends PureComponent{
     constructor(props){
@@ -26,25 +27,15 @@ export default class SearchResultList extends PureComponent{
         this.props.getFavorite(favoriteList)
     }
     createStarRating(ratings){
-        // TODO: create star rating thingy
-        let active_star = <img src="/static/assets/star.png" className="Rating--Star Rating--Star__active"></img>
-        let passive_star =  <img src="/static/assets/star.png" className="Rating--Star"></img> 
+        return <StarRatings
+          rating={ratings}
+          starRatedColor="rgb(218,165,32)"
+          numberOfStars={5}
+          starDimension="15px"
+          starSpacing="1px"
+          name='rating'
+        />
         
-        let stars = null;  
-        if(ratings){
-            let i=0;
-            while(i<ratings){
-                return (active_star)
-                i+=1
-            }
-            while(i<ratings){
-                ratingDiv.join(passive_star);
-                i+=1
-            }
-        }
-
-    let ratingDiv = <div className="Rating" aria-label="Rating of this item is 3 out of 5"></div>
-        return 
     }
     generateFavoriteIcon = (placeId)=>{
         let favorites = this.state.favoriteList;
@@ -69,24 +60,26 @@ export default class SearchResultList extends PureComponent{
             dollars+='$'
         }
         return dollars
-
-
-    return <div>{dollars}</div>
+    }
+    generatePhoto = (photos) => {
+        let photo=<img width="100" height="100" alt="No images found" src="https://via.placeholder.com/50"></img>
+        if(photos){
+            photo = <img 
+            src={photos[0].getUrl()}
+            width="100" height="100"
+            ></img>
+        }
+        return photo
     }
     createUnitView = (restaurant)=>{
         console.log(restaurant)
         // TODO Maybe get the price from making individual
         // API call to place details request
-        let photo=<img width="100" height="100" alt="No images found" src="https://via.placeholder.com/50"></img>
-        if(restaurant.photos){
-            photo = <img 
-            src={restaurant.photos[0].getUrl()}
-            width="100" height="100"
-            ></img>
-        }
+
+        let photo = this.generatePhoto(restaurant.photos)
         let favoriteIcon = this.generateFavoriteIcon(restaurant.place_id);
         let userRatingTotal = restaurant.user_ratings_total?restaurant.user_ratings_total:"No data"
-        // let start_rating = this.createStarRating(restaurant.rating)
+        let startRating = this.createStarRating(restaurant.rating)
         let priceRating = this.generatePriceLevel(restaurant.price_level)
         return(
         <div className="UnitView"
@@ -96,7 +89,7 @@ export default class SearchResultList extends PureComponent{
                 <div className="RestaurantName">{restaurant.name}</div>
                 <div className="Ratings">
                     <div className="PriceRating">{priceRating}</div>
-                    <div className="RestaurantRating">{restaurant.rating}</div>
+                    <div className="RestaurantRating">{startRating}</div>
                     <div className="RestaurantTotalRating">({userRatingTotal})</div>
                 </div>
             </div>

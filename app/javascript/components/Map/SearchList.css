@@ -21,8 +21,10 @@
 }
 
 .Favorite {
+    display: flex;
     padding:10px;
-    margin: 0;
+    margin-right: 60;
+
     /* margin-top: 10px; */
 }
 .RestaurantPhoto{
@@ -40,13 +42,13 @@
 button{
     color:red;
 }
-
-:root {
-    --star-size: 60px;
-    --star-color: #fff;
-    --star-background: #fc0;
-}  
-.Rating--Star {
-    filter: grayscale(100%); 
-    opacity: .3; 
-  }
+.RestaurantRating{
+    width: 60px;
+    padding:5px;
+}
+.RestaurantTotalRating{
+    padding:5px;
+}
+.PriceRating{
+    padding:5px;
+}
