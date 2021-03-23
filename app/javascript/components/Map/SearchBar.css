@@ -1,22 +1,36 @@
-.SearchBar {
-    width:60%;
-    /* padding:200px; */
-    margin: 30px;
-}
 .Header{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
 }
-.field{
-    width: 600px;
-    padding: 20px;
+.SearchBar {
+    /* width:60%; */
+    /* padding:200px; */
+    /* margin: 30px; */
+    /* float: right; */
+    
 }
+
+.Field{
+    width: 500px;
+    padding: 10px;
+    margin: 15px 10px 0px 0px;
+    border: 2px solid #dedede;
+    border-radius: 6px;
+}
+.Field:focus{
+    /* border: 2px solid green; */
+    outline: none;
+}
+
 .Logo{
+    display: flex;
+    flex-direction: row;
     /* width:100px; */
     padding:16px 0px 10px 40px;
 }
 .AppName{
-    padding:10px 10px 10px 0px;
+    padding:0px 10px 10px 10px;
     font-size:40px;
     color:gray;
     font-weight: lighter;
@@ -24,5 +38,4 @@
 .BoldAppName {
     font-weight: bold;
     /* font-size:40px; */
-    /* color:red; */
 }

@@ -16,7 +16,7 @@ export default class Map extends PureComponent {
             responseList : null,
             bounds : null,
             map: null,
-            zoom: 13,
+            zoom: 14,
             markersList : null,
             favorites:null,
             searchTerm: null
@@ -25,16 +25,12 @@ export default class Map extends PureComponent {
 
     googleMapRef = React.createRef()
     // TODO change default location of map. Maybe make it more dynamic?
+    // TODO remove locations from list if not inside bounds
     componentDidMount() {
-        const location = {
-            lat: 41.586,
-            lng: -93.625,
-          }
         let that = this;
         setTimeout(()=>{
             that.createGoogleMap()    
-        },200)  
-        
+        },200)       
     }
     componentDidUpdate(){
         this.getPlaces()
@@ -48,31 +44,25 @@ export default class Map extends PureComponent {
       let map = new window.google.maps.Map(this.googleMapRef.current, {
             zoom: this.state.zoom,
             center: {
-                lat: 41.586,
-                lng: -93.625,
+                lat: 37.773972,
+                lng: -122.431297,
             },
             disableDefaultUI: true,
         })
         map.addListener('center_changed', () => {
-            let bounds = map.getBounds()
             let center = map.getCenter()
-            this.handleCenterChange(bounds, center)
+            this.handleCenterChange(center)
         });
         this.setState({map:map})
     }
-    handleCenterChange = (bounds, center)=> {
-        let newLocation = {
-            lat: center.lat(),
-            lng: center.lng()
-        }
-        
+    handleCenterChange = ()=> {
+        let responseList = null;
+        this.setState({responseList})
         this.clearMarkers();
         this.getPlaces();
     }
     getPlaces(){
-        // TODO 1. pagination to get more places(look into it)
-        // TODO 2. Get nearby query from bounding box instead of center of the map
-        // TODO 3. Make this more modular. Break it in to maintainable components
+        // TODO  Make this more modular. Break it in to maintainable components
         let {searchTerm, map} = this.state;
           if(map && searchTerm){  
             let request = {
@@ -137,10 +127,13 @@ export default class Map extends PureComponent {
     // TODO find a way to clear old markers. As things now
     // old markers are persisting even when it is being called
     // here
-    
+    flyToLocation = () =>{
+        
+    }
     handleSearch = (searchTerm)=>{
+        let responseList = null;
         this.clearMarkers();
-        this.setState({searchTerm});
+        this.setState({searchTerm, responseList});
     }    
     // TODO handle quick refresh of map. Quick refresh leads to the app crashing because the 
     //google object is not ready yet
@@ -162,8 +155,7 @@ export default class Map extends PureComponent {
                     ref={this.googleMapRef}
                     style={{ width: '100%', height: '800px' }}>
                 </div>
-            </div>
-            
+            </div>        
       </div>
       )
     }
