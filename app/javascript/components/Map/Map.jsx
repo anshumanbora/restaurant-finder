@@ -19,7 +19,9 @@ export default class Map extends PureComponent {
             zoom: 14,
             markersList : null,
             favorites:null,
-            searchTerm: null
+            searchTerm: null,
+            mobileView: false,
+            toggleMap: true,
         }
     }
 
@@ -30,8 +32,10 @@ export default class Map extends PureComponent {
         let that = this;
         setTimeout(()=>{
             that.createGoogleMap()    
-        },200)       
-    }
+        },200)
+        window.addEventListener("resize", this.handleResize.bind(this));  
+        this.handleResize();
+    }   
     componentDidUpdate(){
         this.getPlaces()
     }
@@ -128,17 +132,76 @@ export default class Map extends PureComponent {
     // old markers are persisting even when it is being called
     // here
     flyToLocation = () =>{
-        
+
     }
     handleSearch = (searchTerm)=>{
         let responseList = null;
         this.clearMarkers();
         this.setState({searchTerm, responseList});
     }    
+    generateMobileView = (mobileView) => {
+        if(mobileView){
+            return <div> MOBILE VIEW RENDER ONLY</div>
+        }
+    }
+    handleResize = () => {
+        let mobileView = false;
+        if(window.innerWidth<670){
+            mobileView = true; 
+        }
+        this.setState({mobileView})
+    } 
+    toggleMapInMobile = () => {
+        let toggleMap = !this.state.toggleMap; 
+        let map = this.state.map;
+        this.setState({toggleMap})
+        //This is an attempt to make the map to re-render. 
+        map.setZoom(map.getZoom());
+        //Unfortunately it's not working so far
+    }
     // TODO handle quick refresh of map. Quick refresh leads to the app crashing because the 
     //google object is not ready yet
     render() {
-        let searchResultList = this.state.responseList?this.state.responseList:<div>No Results for this Area</div>
+        let {responseList, mobileView, toggleMap} = this.state;
+        let searchResultList = responseList ? responseList:<div></div>
+        let mapDiv = <div
+                        id="google-map"
+                        ref={this.googleMapRef}
+                        style={{ width: '100%', height: '750px' }}
+                        className="MapWrapper"
+                        >
+                            If you're seeing this message, the map failed to render, although 
+                            it is present in the DOM.
+                            Please refresh the browser window to show map.
+                             
+                    </div>
+        let SearchResultDiv = <div className="SearchListWrapper">
+                                {searchResultList}
+                            </div>
+        let SearchResultContainer = SearchResultDiv;
+        let mapContainer = mapDiv;
+        if(mobileView){
+            let listButton = <button 
+                                className="ToggleButton"
+                                onClick={this.toggleMapInMobile}
+                                >List View
+                            </button>
+            let mapButton = <button 
+                                className="ToggleButton"
+                                onClick={this.toggleMapInMobile}
+                                >Map View
+                            </button>
+            if(toggleMap){
+                SearchResultContainer = listButton
+                mapContainer = mapDiv
+                console.log("showing map and list button")
+            }else{
+                SearchResultContainer = SearchResultDiv
+                mapContainer = mapButton
+                console.log("showing list and map button")
+            }
+        }
+
       return (
       <div className="TopLevelWrapper">
             <div>
@@ -147,14 +210,8 @@ export default class Map extends PureComponent {
                 />
             </div>
             <div className="SearchListAndMapWrapper">
-                <div className="SearchListWrapper">
-                {searchResultList}
-                </div>
-                <div
-                    id="google-map"
-                    ref={this.googleMapRef}
-                    style={{ width: '100%', height: '800px' }}>
-                </div>
+                {SearchResultContainer}
+                {mapContainer}
             </div>        
       </div>
       )
