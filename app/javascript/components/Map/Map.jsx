@@ -40,6 +40,7 @@ export default class Map extends PureComponent {
   }
 
   saveFavorite = (favorites) => {
+    
     this.setState({ favorites });
   };
     // Creating a new map object here   

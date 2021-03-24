@@ -7,19 +7,20 @@ export default class SearchResultList extends PureComponent {
     super(props);
     this.state = {
       restaurantList: null,
-      favoriteList: [],
+      favoriteList:[]
     };
   }
   handleFavoriteClick = (placeId) => {
-    let favoriteList = this.state.favoriteList;
+    // We use the localStorage API of the browser to store favarites places
+    let favoriteList = JSON.parse(window.localStorage.getItem('favorites'))|| [];
     if (favoriteList.includes(placeId)) {
       favoriteList.pop(placeId);
     } else {
       favoriteList.push(placeId);
     }
-    this.setState({ favoriteList: favoriteList});
+    window.localStorage.setItem('favorites',JSON.stringify(favoriteList))
     let restaurantList = this.createRestaurantList(this.props.responseList);
-    this.setState({ restaurantList: restaurantList });
+    this.setState({ restaurantList, favoriteList});
     this.props.getFavorite(favoriteList);
   };
   createStarRating(ratings) {
@@ -131,7 +132,8 @@ export default class SearchResultList extends PureComponent {
   };
   componentDidMount = () => {
     let restaurantList = this.createRestaurantList(this.props.responseList);
-    this.setState({ restaurantList: restaurantList });
+    let favoriteList = JSON.parse(window.localStorage.getItem('favorites'))|| [];
+    this.setState({ restaurantList, favoriteList });
   };
   render() {
     let { restaurantList } = this.state;
