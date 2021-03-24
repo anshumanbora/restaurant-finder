@@ -70,15 +70,20 @@ export default class Map extends PureComponent {
     // bounds of the map. Invalid locations are
     // discarded  
   validateLocations = (locationList) => {
+    
     let bounds = this.state.map.getBounds();
+    let latNE = bounds.getNorthEast().lat()
+    let lngNE = bounds.getNorthEast().lng()
+    let latSW = bounds.getSouthWest().lat()
+    let lngSW = bounds.getSouthWest().lng()
     let validatedResponse = [];
     for (let i = 0; i < locationList.length; i++) {
       let loc = locationList[i].geometry.location;
       if (
-        loc.lat() < bounds.Sa.i &&
-        loc.lat() > bounds.Sa.g &&
-        loc.lng() < bounds.La.i &&
-        loc.lng() > bounds.La.g
+        loc.lat() < latNE &&
+        loc.lat() > latSW &&
+        loc.lng() < lngNE &&
+        loc.lng() > lngSW
       ) {
         validatedResponse.push(locationList[i]);
       }
