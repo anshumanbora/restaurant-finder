@@ -119,7 +119,12 @@ export default class SearchResultList extends PureComponent{
         this.setState({restaurantList:restaurantList})
     }
     render(){
-        
+        let {restaurantList} = this.state;
+        if(restaurantList && restaurantList.length==0){
+            return <div className="SearchResultListContainer">
+                        "No results for this search. Try widening your map area or a different search term"
+                    </div>
+        }
         let listOfRestaurants = this.state.restaurantList;
         return(
             <div className="SearchResultListContainer">

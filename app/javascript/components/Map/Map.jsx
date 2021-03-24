@@ -69,11 +69,29 @@ export default class Map extends PureComponent {
         this.clearMarkers();
         this.getPlaces();
     }
+    
+    validateLocations = (locationList) =>{
+        let bounds = this.state.map.getBounds();
+        let validatedResponse = []
+        for(let i=0;i<locationList.length;i++){
+            let loc = locationList[i].geometry.location;
+            console.log(locationList[i].name, loc.lat(),loc.lng(), bounds)
+            if(
+                loc.lat()<bounds.Sa.i 
+                && loc.lat()>bounds.Sa.g
+                && loc.lng()<bounds.La.i
+                && loc.lng()>bounds.La.g
+            ){
+                validatedResponse.push(locationList[i])
+            }
+        }
+        return validatedResponse;
+    }
     getPlaces(){
         // TODO  Make this more modular. Break it in to maintainable components
         let {searchTerm, map} = this.state;
-        let mapBounds = map.getBounds()
-          if(map && searchTerm){  
+        console.log(map.getCenter().lat(), map.getCenter().lng())
+        if(map && searchTerm){  
             let request = {
                 query: searchTerm,
                 location: map.getCenter(),
@@ -84,22 +102,24 @@ export default class Map extends PureComponent {
                     'photos',
                     'price_level',
                     'rating',
-                    'user_ratings_total'
+                    'user_ratings_total',
+                   
                 ],
-                radius:500,
             };
             let service = new window.google.maps.places.PlacesService(this.state.map);
             service.textSearch(request, (results,status)=>{
                 if(status=="OK"){
-                    console.log(results);
-                    //clear markers from old queries to avoid confusion
-                    this.displayMarkers(results, map)
+                    let validatedResults = this.validateLocations(results);
+                    if(validatedResults.length>0){
+                        this.displayMarkers(validatedResults, map)
+                    }
                     this.setState(
                         {
                             responseList:
-                            <SearchResultList getFavorite={this.saveFavorite} responseList={results}/>
+                            <SearchResultList getFavorite={this.saveFavorite} responseList={validatedResults}/>
                         }
                     );
+                    
                 }
             });
         }         
