@@ -1,16 +1,18 @@
 .TopLevelWrapper{
     display: flex;
     flex-direction: column;
-   
+  
 }
 .SearchListAndMapWrapper {
     display: flex;
     flex-direction: row;
+    
 }
 .SearchListWrapper{
-    height:100vh;
+    height:100%;
     width:600px;
     z-index:1;
+    overflow: hidden;
 }
 .ToggleButton {
     background-color: darkgreen;

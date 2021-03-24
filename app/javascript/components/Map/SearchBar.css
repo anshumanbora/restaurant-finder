@@ -4,11 +4,7 @@
     justify-content: space-between;
 }
 .SearchBar {
-    /* width:60%; */
-    /* padding:200px; */
-    /* margin: 30px; */
-    /* float: right; */
-    
+    min-width:390px; 
 }
 
 .Field{
@@ -44,6 +40,7 @@
     .SearchBar{
         display: flex;
         justify-content: center;    
+        margin:0px 0px 20px 0px;
     }
     .Header{
         display: flex;

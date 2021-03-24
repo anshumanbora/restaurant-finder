@@ -22,6 +22,7 @@ export default class Map extends PureComponent {
             searchTerm: null,
             mobileView: false,
             toggleMap: true,
+            mapHeight: '800'
         }
     }
 
@@ -35,6 +36,9 @@ export default class Map extends PureComponent {
         },200)
         window.addEventListener("resize", this.handleResize.bind(this));  
         this.handleResize();
+        // const height = document.getElementById('MapWrapperId').clientHeight;
+        // let mapHeight = ''+height;
+        // this.setState({ mapHeight });
     }   
     componentDidUpdate(){
         this.getPlaces()
@@ -68,13 +72,11 @@ export default class Map extends PureComponent {
     getPlaces(){
         // TODO  Make this more modular. Break it in to maintainable components
         let {searchTerm, map} = this.state;
+        let mapBounds = map.getBounds()
           if(map && searchTerm){  
             let request = {
                 query: searchTerm,
-                locationBias: {
-                    radius: 10000,
-                    center: map.getCenter()
-                },
+                location: map.getCenter(),
                 fields: [
                     'name',
                     'geometry', 
@@ -84,10 +86,12 @@ export default class Map extends PureComponent {
                     'rating',
                     'user_ratings_total'
                 ],
+                radius:500,
             };
             let service = new window.google.maps.places.PlacesService(this.state.map);
-            service.findPlaceFromQuery(request, (results,status)=>{
+            service.textSearch(request, (results,status)=>{
                 if(status=="OK"){
+                    console.log(results);
                     //clear markers from old queries to avoid confusion
                     this.displayMarkers(results, map)
                     this.setState(
@@ -111,7 +115,7 @@ export default class Map extends PureComponent {
                 position: pos,
                 map,
                 title: name,
-              });
+              });  
             markersList.push(marker) 
         }
         this.setState({markersList:markersList})
@@ -162,12 +166,13 @@ export default class Map extends PureComponent {
     // TODO handle quick refresh of map. Quick refresh leads to the app crashing because the 
     //google object is not ready yet
     render() {
-        let {responseList, mobileView, toggleMap} = this.state;
+        let {responseList, mobileView, toggleMap, mapHeight, markersList} = this.state;
+        // console.log(markersList)
         let searchResultList = responseList ? responseList:<div></div>
         let mapDiv = <div
                         id="google-map"
                         ref={this.googleMapRef}
-                        style={{ width: '100%', height: '750px' }}
+                        style={{ width: '100%', height: {mapHeight} }}
                         className="MapWrapper"
                         >
                             If you're seeing this message, the map failed to render, although 
@@ -209,7 +214,9 @@ export default class Map extends PureComponent {
                     onSearch={this.handleSearch}
                 />
             </div>
-            <div className="SearchListAndMapWrapper">
+            <div
+                id="MapWrapperId" 
+                className="SearchListAndMapWrapper">
                 {SearchResultContainer}
                 {mapContainer}
             </div>        

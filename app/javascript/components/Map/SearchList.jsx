@@ -52,7 +52,7 @@ export default class SearchResultList extends PureComponent{
                 </svg>
     }
     generatePriceLevel = (priceLevel) => {
-        console.log(priceLevel)
+        // console.log(priceLevel)
         let dollars = '$';
         if(priceLevel>3){
             dollars+='$$'
@@ -72,7 +72,7 @@ export default class SearchResultList extends PureComponent{
         return photo
     }
     createUnitView = (restaurant)=>{
-        console.log(restaurant)
+        // console.log(restaurant)
         // TODO Maybe get the price from making individual
         // API call to place details request
 
