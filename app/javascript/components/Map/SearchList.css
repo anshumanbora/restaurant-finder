@@ -9,8 +9,6 @@
 }
 .SearchResultListContainer {
     flex-direction: column;
-    width: 400px;
-    height:100vh;
     overflow: scroll;
     background-color: #F5F5F5;
 }

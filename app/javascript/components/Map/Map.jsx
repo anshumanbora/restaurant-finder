@@ -4,19 +4,19 @@ import SearchBar from './SearchBar'
 import SearchResultList from './SearchList'
 import './Map.css'
 
-const getATGoogleAPIKey = () => "AIzaSyDIKzjfQQCahwJ9yEr8gBU9TqJ3MvbPXyY"
-
 export default class Map extends PureComponent {
     constructor(props){
         super(props);
-        this.createGoogleMap = this.createGoogleMap.bind(this);
-        this.getPlaces = this.getPlaces.bind(this);
-        this.displayMarkers = this.displayMarkers.bind(this)
+        this.googleMapRef = React.createRef()
         this.state = {
             responseList : null,
             bounds : null,
             map: null,
             zoom: 14,
+            center: {
+                lat: 37.773972,
+                lng: -122.431297,
+            },
             markersList : [],
             favorites:null,
             searchTerm: null,
@@ -26,7 +26,6 @@ export default class Map extends PureComponent {
         }
     }
 
-    googleMapRef = React.createRef()
     // TODO change default location of map. Maybe make it more dynamic?
     // TODO remove locations from list if not inside bounds
     componentDidMount() {
@@ -41,6 +40,7 @@ export default class Map extends PureComponent {
         // this.setState({ mapHeight });
     }   
     componentDidUpdate(){
+        console.log('did update',this.state.searchTerm)
         this.getPlaces()
     }
     
@@ -48,13 +48,10 @@ export default class Map extends PureComponent {
         this.setState({favorites})
     }
 
-    createGoogleMap(){
+    createGoogleMap =()=>{
       let map = new window.google.maps.Map(this.googleMapRef.current, {
             zoom: this.state.zoom,
-            center: {
-                lat: 37.773972,
-                lng: -122.431297,
-            },
+            center: this.state.center,
             disableDefaultUI: true,
         })
         map.addListener('center_changed', () => {
@@ -85,9 +82,14 @@ export default class Map extends PureComponent {
         }
         return validatedResponse;
     }
-    getPlaces(){
+    getPlaces = () => {
         // TODO  Make this more modular. Break it in to maintainable components
-        let {searchTerm, map} = this.state;
+        let {searchTerm, map, markersList} = this.state;
+        //search empty and there are markers present
+        //so just clear them
+        if(map && searchTerm === '' && markersList){
+            this.handleMarkers()
+        }
         if(map && searchTerm){  
             let request = {
                 query: searchTerm,
@@ -105,10 +107,10 @@ export default class Map extends PureComponent {
             };
             let service = new window.google.maps.places.PlacesService(this.state.map);
             service.textSearch(request, (results,status)=>{
-                if(status=="OK"){
+                if(status=="OK"){    
                     let validatedResults = this.validateLocations(results);
                     if(validatedResults.length>0){
-                        this.displayMarkers(validatedResults, map)
+                        this.handleMarkers(validatedResults, map)
                     }
                     this.setState(
                         {
@@ -121,21 +123,24 @@ export default class Map extends PureComponent {
             });
         }         
     }
-    displayMarkers(locationList, map){
+    handleMarkers = (locationList, map) => {
         let markersList = this.state.markersList
-        // This is probably not the most efficient way to clear markers 
-        // becuase every little movement on the map would result in clearing
-        // and re-rendering of markers. 
-        // But this at least does the job for now. 
+        // Clearing existing markers before rendering new ones.
+        // A future improvement would 
+        // be to break these into two functions, one more clearing and the other
+        // for creating. 
         if(markersList){
             for (let i = 0; i < markersList.length; i++) {
                 markersList[i].setMap(null);
             }
         } 
+        // Sike! No locations to mark so return from here
+        if(!locationList){
+            return;
+        }
         for(let i=0;i<locationList.length;i++){
             const pos = locationList[i].geometry.location
             const name = locationList[i].name
-            // TODO change icon of markers
             const marker = new window.google.maps.Marker({
                 position: pos,
                 map,
@@ -168,55 +173,34 @@ export default class Map extends PureComponent {
     } 
     toggleMapInMobile = () => {
         let toggleMap = !this.state.toggleMap; 
-        let map = this.state.map;
         this.setState({toggleMap})
-        //This is an attempt to make the map to re-render. 
-        map.setZoom(map.getZoom());
-        //Unfortunately it's not working so far
     }
-    // TODO handle quick refresh of map. Quick refresh leads to the app crashing because the 
-    //google object is not ready yet
     render() {
-        let {responseList, mobileView, toggleMap, mapHeight, markersList} = this.state;
-        // console.log(markersList)
+        let {responseList, mobileView, toggleMap, mapHeight, map} = this.state;
         let searchResultList = responseList ? responseList:<div></div>
-        let mapDiv = <div
-                        id="google-map"
-                        ref={this.googleMapRef}
-                        style={{ width: '100%', height: {mapHeight} }}
-                        className="MapWrapper"
-                        >
-                            If you're seeing this message, the map failed to render, although 
-                            it is present in the DOM.
-                            Please refresh the browser window to show map.
-                            
-                    </div>
-        let SearchResultDiv = <div className="SearchListWrapper">
-                                {searchResultList}
-                            </div>
-        let SearchResultContainer = SearchResultDiv;
-        let mapContainer = mapDiv;
+        let searchResultlistClass = "SearchListWrapper"
+        let toggleButtonName = ""
+        let toggleButtonClass = "Hide"
+        let SearchListWidth = "100%" 
+        if(!responseList){
+            searchResultlistClass = "Hide"
+        }
         if(mobileView){
-            let listButton = <button 
-                                className="ToggleButton"
-                                onClick={this.toggleMapInMobile}
-                                >List View
-                            </button>
-            let mapButton = <button 
-                                className="ToggleButton"
-                                onClick={this.toggleMapInMobile}
-                                >Map View
-                            </button>
+            toggleButtonClass = "ToggleButton Show"
             if(toggleMap){
-                SearchResultContainer = listButton
-                mapContainer = mapDiv
-                console.log("showing map and list button")
+                searchResultlistClass = "SearchListWrapper Hide"
+                toggleButtonName = "List"
             }else{
-                SearchResultContainer = SearchResultDiv
-                mapContainer = mapButton
-                console.log("showing list and map button")
+                searchResultlistClass = "SearchListWrapper"
+                toggleButtonName = "Map"
+                SearchListWidth = window.innerWidth+"px"
             }
         }
+        let mobileToggleButton =   <button 
+                                        className={toggleButtonClass}
+                                        onClick={this.toggleMapInMobile}
+                                    >{toggleButtonName}
+                                    </button> 
 
       return (
       <div className="TopLevelWrapper">
@@ -228,8 +212,19 @@ export default class Map extends PureComponent {
             <div
                 id="MapWrapperId" 
                 className="SearchListAndMapWrapper">
-                {SearchResultContainer}
-                {mapContainer}
+                <div 
+                    style={{width: SearchListWidth}}
+                    className={searchResultlistClass}>
+                    {searchResultList}
+                </div>
+                <div
+                    id="google-map"
+                    ref={this.googleMapRef}
+                    style={{ width: '100%', height: {mapHeight} }}
+                    className="MapWrapper"
+                    >   
+                </div>
+                {mobileToggleButton}
             </div>        
       </div>
       )
