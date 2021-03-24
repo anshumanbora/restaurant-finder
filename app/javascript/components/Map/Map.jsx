@@ -183,6 +183,7 @@ export default class Map extends PureComponent {
     let { responseList, mobileView, toggleMap, mapHeight, map } = this.state;
     let searchResultList = responseList ? responseList : <div></div>;
     let searchResultlistClass = "SearchListWrapper";
+    let mapClass = "MapWrapper";
     let toggleButtonName = "";
     let toggleButtonClass = "Hide";
     let SearchListWidth = "100%";
@@ -197,6 +198,7 @@ export default class Map extends PureComponent {
       } else {
         searchResultlistClass = "SearchListWrapper";
         toggleButtonName = "Map";
+        mapClass = "Hide"
         SearchListWidth = window.innerWidth + "px";
       }
     }
@@ -222,7 +224,7 @@ export default class Map extends PureComponent {
             id="google-map"
             ref={this.googleMapRef}
             style={{ width: "100%", height: { mapHeight } }}
-            className="MapWrapper"
+            className={mapClass}
           ></div>
           {mobileToggleButton}
         </div>
