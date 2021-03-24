@@ -8,7 +8,6 @@ export default class SearchResultList extends PureComponent {
     this.state = {
       restaurantList: null,
       favoriteList: [],
-      refresh: null,
     };
   }
   handleFavoriteClick = (placeId) => {
@@ -18,12 +17,9 @@ export default class SearchResultList extends PureComponent {
     } else {
       favoriteList.push(placeId);
     }
-    let refresh = this.state.refresh ? false : true;
-    // console.log("clicked heart, setting state", this.state)
-    this.setState({ favoriteList: favoriteList, refresh: true });
+    this.setState({ favoriteList: favoriteList});
     let restaurantList = this.createRestaurantList(this.props.responseList);
     this.setState({ restaurantList: restaurantList });
-
     this.props.getFavorite(favoriteList);
   };
   createStarRating(ratings) {
@@ -41,7 +37,6 @@ export default class SearchResultList extends PureComponent {
   generateFavoriteIcon = (placeId) => {
     let favorites = this.state.favoriteList;
     if (favorites.includes(placeId)) {
-      // console.log('exists')
       return (
         <svg
           onClick={() => this.handleFavoriteClick(placeId)}
@@ -59,8 +54,6 @@ export default class SearchResultList extends PureComponent {
         </svg>
       );
     }
-    // console.log('doesn\'t exists')
-
     return (
       <svg
         onClick={() => this.handleFavoriteClick(placeId)}
@@ -76,7 +69,6 @@ export default class SearchResultList extends PureComponent {
     );
   };
   generatePriceLevel = (priceLevel) => {
-    // console.log(priceLevel)
     let dollars = "$";
     if (priceLevel > 3) {
       dollars += "$$";
@@ -100,10 +92,6 @@ export default class SearchResultList extends PureComponent {
     return photo;
   };
   createUnitView = (restaurant) => {
-    // console.log(restaurant)
-    // TODO Maybe get the price from making individual
-    // API call to place details request
-
     let photo = this.generatePhoto(restaurant.photos);
     let favoriteIcon = this.generateFavoriteIcon(restaurant.place_id);
     let userRatingTotal = restaurant.user_ratings_total

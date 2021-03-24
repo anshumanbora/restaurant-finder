@@ -12,18 +12,14 @@
   overflow: scroll;
   background-color: #f5f5f5;
 }
-
 .Ratings {
   display: flex;
   flex-direction: row;
 }
-
 .Favorite {
   display: flex;
   padding: 10px;
   margin-right: 60;
-
-  /* margin-top: 10px; */
 }
 .RestaurantPhoto {
   padding: 5px;

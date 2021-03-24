@@ -1,4 +1,3 @@
-// TODO: get some linting tool to make codebase style uniform
 import React, { PureComponent, createRef } from "react";
 import SearchBar from "./SearchBar";
 import SearchResultList from "./SearchList";
@@ -25,9 +24,6 @@ export default class Map extends PureComponent {
       mapHeight: "800",
     };
   }
-
-  // TODO change default location of map. Maybe make it more dynamic?
-  // TODO remove locations from list if not inside bounds
   componentDidMount() {
     let that = this;
     setTimeout(() => {
@@ -40,24 +36,26 @@ export default class Map extends PureComponent {
     // this.setState({ mapHeight });
   }
   componentDidUpdate() {
-    console.log("did update", this.state.searchTerm);
     this.getPlaces();
   }
 
   saveFavorite = (favorites) => {
     this.setState({ favorites });
   };
-
+    // Creating a new map object here   
   createGoogleMap = () => {
     let map = new window.google.maps.Map(this.googleMapRef.current, {
       zoom: this.state.zoom,
       center: this.state.center,
       disableDefaultUI: true,
     });
+    // Adding listener to watchout for map pans and scroll
     map.addListener("center_changed", () => {
       let center = map.getCenter();
       this.handleCenterChange(center);
     });
+    // Persiting this to state so that it is available for 
+    // the rest of the class members
     this.setState({ map: map });
   };
   handleCenterChange = () => {
@@ -65,7 +63,9 @@ export default class Map extends PureComponent {
     this.setState({ responseList });
     this.getPlaces();
   };
-
+    // Checks if a list of locations are inside the
+    // bounds of the map. Invalid locations are
+    // discarded  
   validateLocations = (locationList) => {
     let bounds = this.state.map.getBounds();
     let validatedResponse = [];
@@ -82,8 +82,8 @@ export default class Map extends PureComponent {
     }
     return validatedResponse;
   };
+  // Function to interact with the google places API
   getPlaces = () => {
-    // TODO  Make this more modular. Break it in to maintainable components
     let { searchTerm, map, markersList } = this.state;
     //search empty and there are markers present
     //so just clear them
@@ -108,6 +108,8 @@ export default class Map extends PureComponent {
       service.textSearch(request, (results, status) => {
         if (status == "OK") {
           let validatedResults = this.validateLocations(results);
+          // If we have at least one or more valid locations inside the bounds,
+          // mark them on the map.
           if (validatedResults.length > 0) {
             this.handleMarkers(validatedResults, map);
           }
@@ -151,6 +153,7 @@ export default class Map extends PureComponent {
     this.setState({ markersList: markersList });
     this.setMapOnAll(map);
   };
+  // All markers created, now make them visible on the map
   setMapOnAll = (map) => {
     let markersList = this.state.markersList;
     if (markersList) {
@@ -159,11 +162,11 @@ export default class Map extends PureComponent {
       }
     }
   };
-
   handleSearch = (searchTerm) => {
     let responseList = null;
     this.setState({ searchTerm, responseList });
   };
+  // Function to help switch to and from mobile view
   handleResize = () => {
     let mobileView = false;
     if (window.innerWidth < 865) {
@@ -171,6 +174,7 @@ export default class Map extends PureComponent {
     }
     this.setState({ mobileView });
   };
+  // Toggle between map and list view for small screen sizes
   toggleMapInMobile = () => {
     let toggleMap = !this.state.toggleMap;
     this.setState({ toggleMap });
@@ -185,7 +189,7 @@ export default class Map extends PureComponent {
     if (!responseList) {
       searchResultlistClass = "Hide";
     }
-    if (mobileView) {
+    if (mobileView && responseList) {
       toggleButtonClass = "ToggleButton Show";
       if (toggleMap) {
         searchResultlistClass = "SearchListWrapper Hide";
