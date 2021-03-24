@@ -17,7 +17,7 @@ export default class Map extends PureComponent {
             bounds : null,
             map: null,
             zoom: 14,
-            markersList : null,
+            markersList : [],
             favorites:null,
             searchTerm: null,
             mobileView: false,
@@ -66,7 +66,6 @@ export default class Map extends PureComponent {
     handleCenterChange = ()=> {
         let responseList = null;
         this.setState({responseList})
-        this.clearMarkers();
         this.getPlaces();
     }
     
@@ -75,7 +74,6 @@ export default class Map extends PureComponent {
         let validatedResponse = []
         for(let i=0;i<locationList.length;i++){
             let loc = locationList[i].geometry.location;
-            console.log(locationList[i].name, loc.lat(),loc.lng(), bounds)
             if(
                 loc.lat()<bounds.Sa.i 
                 && loc.lat()>bounds.Sa.g
@@ -90,7 +88,6 @@ export default class Map extends PureComponent {
     getPlaces(){
         // TODO  Make this more modular. Break it in to maintainable components
         let {searchTerm, map} = this.state;
-        console.log(map.getCenter().lat(), map.getCenter().lng())
         if(map && searchTerm){  
             let request = {
                 query: searchTerm,
@@ -125,11 +122,19 @@ export default class Map extends PureComponent {
         }         
     }
     displayMarkers(locationList, map){
-        let markersList = [];
+        let markersList = this.state.markersList
+        // This is probably not the most efficient way to clear markers 
+        // becuase every little movement on the map would result in clearing
+        // and re-rendering of markers. 
+        // But this at least does the job for now. 
+        if(markersList){
+            for (let i = 0; i < markersList.length; i++) {
+                markersList[i].setMap(null);
+            }
+        } 
         for(let i=0;i<locationList.length;i++){
             const pos = locationList[i].geometry.location
             const name = locationList[i].name
-            // console.log("name:",name,",location:",pos)
             // TODO change icon of markers
             const marker = new window.google.maps.Marker({
                 position: pos,
@@ -149,25 +154,11 @@ export default class Map extends PureComponent {
             }
         }        
     }
-    clearMarkers() {
-        this.setMapOnAll(null);
-    }
-    // TODO find a way to clear old markers. As things now
-    // old markers are persisting even when it is being called
-    // here
-    flyToLocation = () =>{
-
-    }
+    
     handleSearch = (searchTerm)=>{
         let responseList = null;
-        this.clearMarkers();
         this.setState({searchTerm, responseList});
     }    
-    generateMobileView = (mobileView) => {
-        if(mobileView){
-            return <div> MOBILE VIEW RENDER ONLY</div>
-        }
-    }
     handleResize = () => {
         let mobileView = false;
         if(window.innerWidth<865){
@@ -198,7 +189,7 @@ export default class Map extends PureComponent {
                             If you're seeing this message, the map failed to render, although 
                             it is present in the DOM.
                             Please refresh the browser window to show map.
-                             
+                            
                     </div>
         let SearchResultDiv = <div className="SearchListWrapper">
                                 {searchResultList}
