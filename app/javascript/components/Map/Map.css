@@ -1,42 +1,38 @@
-.TopLevelWrapper{
-    display: flex;
-    flex-direction: column;
-  
+.TopLevelWrapper {
+  display: flex;
+  flex-direction: column;
 }
 .SearchListAndMapWrapper {
-    display: flex;
-    flex-direction: row;
-    
+  display: flex;
+  flex-direction: row;
 }
-.SearchListWrapper{
-    height:100vh;
-    /* z-index:2; */
-    overflow: scroll;
-    max-width: 700px;
+.SearchListWrapper {
+  height: 100vh;
+  overflow: scroll;
+  max-width: 700px;
 }
 .ToggleButton {
-    background-color: darkgreen;
-    color: white;
-    width: 100px;
-    height: 50px;
-    position: fixed;
-    /* z-index:10; */
-    bottom:0;
+  background-color: darkgreen;
+  color: white;
+  width: 70px;
+  height: 30px;
+  position: fixed;
+  bottom: 2%;
+  left: 45%;
+  border: 0;
 }
 .MapWrapper {
-    /* z-index:1; */
-    height:750px;
-    width: 100%;
+  height: 750px;
+  width: 100%;
 }
 .FullWidth {
-    width: 100vw;
+  width: 100vw;
 }
 .Hide {
-    display: none;
+  display: none;
 }
 .Show {
-    display: block;
+  display: block;
 }
 @media only screen and (max-width: 865px) {
-
 }

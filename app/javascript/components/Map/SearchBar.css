@@ -1,59 +1,57 @@
-.Header{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+.Header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .SearchBar {
-    min-width:390px; 
+  min-width: 390px;
 }
 
-.Field{
-    width: 400px;
-    padding: 10px;
-    margin: 15px 10px 0px 0px;
-    border: 2px solid #dedede;
-    border-radius: 6px;
+.Field {
+  width: 400px;
+  padding: 10px;
+  margin: 15px 10px 0px 0px;
+  border: 2px solid #dedede;
+  border-radius: 6px;
 }
-.Field:focus{
-    /* border: 2px solid green; */
-    outline: none;
+.Field:focus {
+  /* border: 2px solid green; */
+  outline: none;
 }
 
-.Logo{
-    display: flex;
-    flex-direction: row;
-    /* width:100px; */
-    padding:16px 0px 10px 40px;
+.Logo {
+  display: flex;
+  flex-direction: row;
+  /* width:100px; */
+  padding: 16px 0px 10px 40px;
 }
-.AppName{
-    padding:0px 10px 10px 10px;
-    font-size:40px;
-    color:gray;
-    font-weight: lighter;
+.AppName {
+  padding: 0px 10px 10px 10px;
+  font-size: 40px;
+  color: gray;
+  font-weight: lighter;
 }
 .BoldAppName {
-    font-weight: bold;
-    /* font-size:40px; */
+  font-weight: bold;
+  /* font-size:40px; */
 }
 
 @media only screen and (max-width: 865px) {
-    .SearchBar{
-        display: flex;
-        justify-content: center;    
-        margin:0px 0px 20px 0px;
-    }
-    .Header{
-        display: flex;
-        flex-direction: column;
-        /* align-content: center;
+  .SearchBar {
+    display: flex;
+    justify-content: center;
+    margin: 0px 0px 20px 0px;
+  }
+  .Header {
+    display: flex;
+    flex-direction: column;
+    /* align-content: center;
         justify-content: center; */
-    }
-    .Logo{
-        /* width:100px; */
-        padding:16px 0px 10px 0px;
-        display: flex;
-        justify-content: center;
-      
-    }
-    
+  }
+  .Logo {
+    /* width:100px; */
+    padding: 16px 0px 10px 0px;
+    display: flex;
+    justify-content: center;
+  }
 }
