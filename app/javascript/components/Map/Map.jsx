@@ -41,7 +41,6 @@ export default class Map extends PureComponent {
       this.getPlaces();
     }
   }
-
   saveFavorite = (favorites) => {
     this.setState({ favorites });
   };

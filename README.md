@@ -4,7 +4,7 @@
 
 ### Overview
 
-This is a react app to find restaurants on a map.
+This is a react app to find places to eat on a map.
 
 #### Supported features
 
