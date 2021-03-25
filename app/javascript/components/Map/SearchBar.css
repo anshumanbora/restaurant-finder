@@ -36,6 +36,7 @@
 @media only screen and (max-width: 865px) {
   .SearchBar {
     display: flex;
+    min-width: 300px;
     justify-content: center;
     margin: 0px 0px 20px 0px;
   }
@@ -50,5 +51,9 @@
     padding: 16px 0px 10px 0px;
     display: flex;
     justify-content: center;
+  }
+  .Field {
+    width: 300px;
+    margin: 0px 0px 0px 0px;
   }
 }

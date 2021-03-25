@@ -1,3 +1,8 @@
+html,
+body {
+  font-family: "Helvetica", "Arial", sans-serif;
+  color: #6e6e6e;
+}
 .TopLevelWrapper {
   display: flex;
   flex-direction: column;
@@ -7,12 +12,12 @@
   flex-direction: row;
 }
 .SearchListWrapper {
-  height: 100vh;
+  height: 83vh;
   overflow: scroll;
   max-width: 700px;
 }
 .ToggleButton {
-  background-color: darkgreen;
+  background-color: limegreen;
   color: white;
   width: 70px;
   height: 30px;
@@ -33,4 +38,6 @@
 }
 .Show {
   display: block;
+}
+@media only screen and (max-width: 865px) {
 }

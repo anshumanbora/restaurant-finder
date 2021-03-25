@@ -7,20 +7,20 @@ export default class SearchResultList extends PureComponent {
     super(props);
     this.state = {
       restaurantList: null,
-      favoriteList:[]
     };
   }
   handleFavoriteClick = (placeId) => {
     // We use the localStorage API of the browser to store favarites places
-    let favoriteList = JSON.parse(window.localStorage.getItem('favorites'))|| [];
+    let favoriteList =
+      JSON.parse(window.localStorage.getItem("favorites")) || [];
     if (favoriteList.includes(placeId)) {
       favoriteList.pop(placeId);
     } else {
       favoriteList.push(placeId);
     }
-    window.localStorage.setItem('favorites',JSON.stringify(favoriteList))
+    window.localStorage.setItem("favorites", JSON.stringify(favoriteList));
     let restaurantList = this.createRestaurantList(this.props.responseList);
-    this.setState({ restaurantList, favoriteList});
+    this.setState({ restaurantList });
     this.props.getFavorite(favoriteList);
   };
   createStarRating(ratings) {
@@ -36,7 +36,7 @@ export default class SearchResultList extends PureComponent {
     );
   }
   generateFavoriteIcon = (placeId) => {
-    let favorites = this.state.favoriteList;
+    let favorites = JSON.parse(window.localStorage.getItem("favorites")) || [];
     if (favorites.includes(placeId)) {
       return (
         <svg
@@ -100,15 +100,25 @@ export default class SearchResultList extends PureComponent {
       : "No data";
     let startRating = this.createStarRating(restaurant.rating);
     let priceRating = this.generatePriceLevel(restaurant.price_level);
+    let isOpen = restaurant.opening_hours
+      ? restaurant.opening_hours.open_now
+        ? "Yes"
+        : "No"
+      : "Not avialable";
+    let openInfo = "Open now: " + isOpen;
     return (
       <div className="UnitView" key={restaurant.place_id}>
         <div className="RestaurantPhoto">{photo}</div>
-        <div className="RestaurantDetails">
+        <div className="Information">
           <div className="RestaurantName">{restaurant.name}</div>
           <div className="Ratings">
-            <div className="PriceRating">{priceRating}</div>
             <div className="RestaurantRating">{startRating}</div>
             <div className="RestaurantTotalRating">({userRatingTotal})</div>
+          </div>
+          <div className="Details">
+            <div className="PriceRating">{priceRating}</div>
+            <div className="Bullet">&#9679;</div>
+            <div className="OpenInfo">{openInfo}</div>
           </div>
         </div>
         <div className="Favorite">{favoriteIcon}</div>
@@ -132,8 +142,7 @@ export default class SearchResultList extends PureComponent {
   };
   componentDidMount = () => {
     let restaurantList = this.createRestaurantList(this.props.responseList);
-    let favoriteList = JSON.parse(window.localStorage.getItem('favorites'))|| [];
-    this.setState({ restaurantList, favoriteList });
+    this.setState({ restaurantList });
   };
   render() {
     let { restaurantList } = this.state;

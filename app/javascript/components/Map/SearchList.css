@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: row;
   padding: 20px;
-  margin: 10px 10px 10px 20px;
+  margin: 5px 5px 5px 5px;
   border: 2px solid #e0e0e0;
   border-radius: 5px;
   background-color: white;
 }
 .SearchResultListContainer {
   flex-direction: column;
-  overflow: scroll;
+  /* overflow: scroll; */
   background-color: #f5f5f5;
 }
 .Ratings {
@@ -24,22 +24,35 @@
 .RestaurantPhoto {
   padding: 5px;
 }
+.Information {
+  padding: 10px;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+}
 .RestaurantName {
   font-size: 20px;
   font-weight: bold;
   color: #666;
 }
-.RestaurantDetails {
-  padding: 10px;
-  width: 70%;
-}
+
 .RestaurantRating {
-  width: 60px;
+  width: 100px;
   padding: 5px;
 }
 .RestaurantTotalRating {
   padding: 5px;
 }
 .PriceRating {
+  padding: 5px;
+}
+.Details {
+  display: flex;
+  flex-direction: row;
+}
+.OpenInfo {
+  padding: 5px;
+}
+.Bullet {
   padding: 5px;
 }
