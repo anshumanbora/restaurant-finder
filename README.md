@@ -46,12 +46,12 @@ note : I had setup the psql initially hoping to work on some API integration but
 2. Starting the server
 `rails s --binding=127.0.0.1`
 
-At this point the app should be running on `http://localhost:3000`
+At this point the app should be running on `http://localhost:3000`.
 In case you want to play around with the code, please use prettier to format the code:
 `yarn prettier --write "app/javascript/components/*/*"`
 
 ### Video Walkthrough
-
+[Link](https://youtu.be/3TFCroREs6Y)
 ###  Goals discussion
 - When it comes to the main tasks, I think I did a decent enough job in achieving the basic functionalities described under supported features above.
 
@@ -66,4 +66,4 @@ In case you want to play around with the code, please use prettier to format the
 	 - API endpoints
 		  -  user (Create, Delete, Update)
 		  -  favorites/user   (Get, Set)
-- I was also not able to the stretch goals of labelling the center of the map after a reverse Geocoding call to the google API and multiple languages adaptability due to my limited bandwidth. I have worked with The Geocoding API before and I assume the potential implementation should be straightforward.  
+- I was also not able to do the stretch goals of labelling the center of the map after a reverse Geocoding call to the google API and multiple languages adaptability due to my limited bandwidth. I have worked with The Geocoding API before and I assume the potential implementation should be straightforward.  
