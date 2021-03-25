@@ -38,7 +38,6 @@ export default class Map extends PureComponent {
     let mapHeight = "" + height;
     this.setState({ mapHeight });
     if (prevState.bounds !== bounds || prevState.searchTerm !== searchTerm) {
-      console.log("calling get places");
       this.getPlaces();
     }
   }

@@ -100,6 +100,9 @@ export default class SearchResultList extends PureComponent {
       : "No data";
     let startRating = this.createStarRating(restaurant.rating);
     let priceRating = this.generatePriceLevel(restaurant.price_level);
+    // `open_now` is deprecated and is throwing errors in the console
+    // but the recommended alternative `isOpen` function
+    // is returning null values. 
     let isOpen = restaurant.opening_hours
       ? restaurant.opening_hours.open_now
         ? "Yes"
@@ -149,7 +152,9 @@ export default class SearchResultList extends PureComponent {
     if (restaurantList && restaurantList.length == 0) {
       return (
         <div className="SearchResultListContainer">
-          "No results for this search. Try widening your map area or a different
+          "No results for this search. 
+          <br/>
+          Try widening your map area or a different
           search term"
         </div>
       );
