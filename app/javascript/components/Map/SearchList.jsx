@@ -23,7 +23,7 @@ export default class SearchResultList extends PureComponent {
     this.setState({ restaurantList });
     this.props.getFavorite(favoriteList);
   };
-  createStarRating(ratings) {
+  createStarRating = (ratings) => {
     return (
       <StarRatings
         rating={ratings}
@@ -34,7 +34,7 @@ export default class SearchResultList extends PureComponent {
         name="rating"
       />
     );
-  }
+  };
   generateFavoriteIcon = (placeId) => {
     let favorites = JSON.parse(window.localStorage.getItem("favorites")) || [];
     if (favorites.includes(placeId)) {

@@ -200,7 +200,7 @@ export default class Map extends PureComponent {
     let mapClass = "MapWrapper";
     let toggleButtonName = "";
     let toggleButtonClass = "Hide";
-    let SearchListWidth = "100%";
+    let searchListWidth = "100%";
     if (!responseList) {
       searchResultlistClass = "Hide";
     }
@@ -213,7 +213,7 @@ export default class Map extends PureComponent {
         searchResultlistClass = "SearchListWrapper";
         toggleButtonName = "Map";
         mapClass = "Hide";
-        SearchListWidth = window.innerWidth + "px";
+        searchListWidth = window.innerWidth + "px";
       }
     }
     let mobileToggleButton = (
